@@ -183,10 +183,9 @@ export default function App() {
 					<>
 						<div className="col-md-5 col-sm-12 py-1">
 							<label>Latitude</label>
-
 							<input
 								className="form-control map-input-control"
-								type="text"
+								type="number"
 								name="lat"
 								value={lat}
 								disabled={locationConfirmed}
@@ -198,7 +197,7 @@ export default function App() {
 							<label>Longitude</label>
 							<input
 								className="form-control map-input-control"
-								type="text"
+								type="number"
 								name="lng"
 								value={lng}
 								disabled={locationConfirmed}
