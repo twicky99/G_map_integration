@@ -8,16 +8,18 @@ import {
 import { getGeocode } from "use-places-autocomplete";
 import ReverseGeoLocation from "./components/ReverseGeoLocation";
 import MapContainerProps from "./interfaces/MapContainer.interface";
+const MAP_HEIGHT: number  = 500
 
 const googleMapURL = "https://maps.googleapis.com/maps/api/js?key=AIzaSyAJIsQq2P13hvXC12s7bdzvyb9btODQQNU&v=3.exp&libraries=geometry,drawing,places";
 
-function Map({ location, disabled, defaultZoom, isMarkerShown, mapClickHandler }: MapContainerProps) {
+function Map({ location, disabled, defaultZoom, isMarkerShown, mapClickHandler, dragHandler }: MapContainerProps) {
 
 	const mapRef: any = React.useRef <HTMLInputElement>();
 
 	const onMapLoad = React.useCallback((map: any) => {
 		mapRef.current = map;
 	}, []);
+
 
 	const panTo = React.useCallback(({ lat, lng }) => {
 		mapRef.current.panTo({ lat, lng });
@@ -26,6 +28,7 @@ function Map({ location, disabled, defaultZoom, isMarkerShown, mapClickHandler }
 	useEffect(() => {
 		panTo(location)
 	}, [location, panTo])
+
 
 	return (
 		<>
@@ -44,6 +47,7 @@ function Map({ location, disabled, defaultZoom, isMarkerShown, mapClickHandler }
 						position={location} 
 						draggable =  {!disabled}
 						defaultVisible={true} 
+						onDrag={!disabled ? dragHandler : null}
 					></Marker>
 				)}
 			</GoogleMap>
@@ -57,7 +61,7 @@ export default function App() {
 	const [location, setLocation] = useState({ lat: 2, lng: 73 });
 	const [lat, setLat] = useState(location.lat);
 	const [lng, setLng] = useState(location.lng);
-	const [zoomLevel, setZoomLevel] = useState(8);
+	const [zoomLevel, setZoomLevel] = useState(12);
 	const [key] = useState(new Date().toISOString());
 	const [locationOption, setLocationOption] = useState("geo_location");
 	const [address, setAddress] = useState("")
@@ -80,16 +84,20 @@ export default function App() {
 		let { latLng } = mapClickData
 		setLocation({ lat: latLng.lat(), lng: latLng.lng() });
 		if(locationOption === "reverse_geo_location" ){
-			getGeocode({ location: { lat: latLng.lat(), lng: latLng.lng() } })
-			.then((results) => {
-				// console.log("📍 DATA: ", results[0].formatted_address)
-				setAddress(results[0].formatted_address)
-			}
-			).catch((error) => {
-				console.log("😱 Error: ", error);
-			});
+			// for fixing over_query_limit for getting geo location
+			setTimeout(() => {
+				getGeocode({ location: { lat: latLng.lat(), lng: latLng.lng() } })
+				.then((results) => {
+					// console.log("📍 DATA: ", results[0].formatted_address)
+					setAddress(results[0].formatted_address)
+				}
+				).catch((error) => {
+					console.log("😱 Error: ", error);
+				});
+			}, 200);			
 		}
 	}
+
 
 	useEffect(() => {
 		setLat(location.lat);
@@ -104,7 +112,7 @@ export default function App() {
 					Confirm Location on map</div>
 				<div
 					className="p-2 justify-content-between"
-					style={{ background: "#aad9fc" }}
+					// style={{ background: "#aad9fc" }}
 				>
 					<div className="form-check form-check-inline">
 						<input
@@ -156,8 +164,9 @@ export default function App() {
 					googleMapURL={googleMapURL}
 					disabled={locationConfirmed}
 					loadingElement={<div style={{ height: "100%" }} />}
-					containerElement={<div style={{ height: "400px" }} />}
+					containerElement={<div style={{ height: MAP_HEIGHT + "px" }} />}
 					mapElement={<div style={{ height: "100%" }} />}
+					dragHandler={mapClickHandler}
 				/>
 			</div>
 			<div className="row input-row">
@@ -173,6 +182,8 @@ export default function App() {
 				) : (
 					<>
 						<div className="col-md-5 col-sm-12 py-1">
+							<label>Latitude</label>
+
 							<input
 								className="form-control map-input-control"
 								type="text"
@@ -184,6 +195,7 @@ export default function App() {
 							/>
 						</div>
 						<div className="col-md-5 col-sm-12 py-1">
+							<label>Longitude</label>
 							<input
 								className="form-control map-input-control"
 								type="text"

@@ -15,4 +15,5 @@ export default interface MapContainerProps {
 	mapElement: any
 	onClick?:  any
 	onDrag?:  any
+	dragHandler?:  any
 }

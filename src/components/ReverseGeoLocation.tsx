@@ -41,7 +41,7 @@ export default function ReverseGeoLocation({setLocation, setZoomLevel, updatedAd
 		getGeocode({ address: val })
         .then((results) => getLatLng(results[0]))
         .then(({ lat, lng }) => {
-            console.log("📍 Coordinates: ", { lat, lng });
+            // console.log("📍 Coordinates: ", { lat, lng });
             setLocation({ lat, lng });
             setZoomLevel(15)
         })
