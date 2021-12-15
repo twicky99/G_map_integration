@@ -47,7 +47,7 @@ function Map({ location, disabled, defaultZoom, isMarkerShown, mapClickHandler, 
 						position={location} 
 						draggable =  {!disabled}
 						defaultVisible={true} 
-						onDrag={!disabled ? dragHandler : null}
+						onDragEnd={!disabled ? dragHandler : null}
 					></Marker>
 				)}
 			</GoogleMap>
