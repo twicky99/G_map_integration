@@ -1,4 +1,4 @@
-import Location from "./Location.interface";
+import Location from "./LocationInterface";
 
 export default interface MapContainerProps {
     key: string;
