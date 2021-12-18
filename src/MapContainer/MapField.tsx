@@ -152,6 +152,7 @@
 //         </>
 //     </div>
 // }
+
 import React, {useEffect, useState, ChangeEvent, useCallback} from "react";
 import {
     GoogleMap,
@@ -193,6 +194,7 @@ function Map({ location, disabled, defaultZoom, isMarkerShown, mapClickHandler, 
     //     if(!disabled)
     //         setCenter(mapCenter);
     // };
+    
     return (
         <>
             <GoogleMap
@@ -225,28 +227,35 @@ export const MapContainer = withScriptjs(withGoogleMap(Map));
 //     mapCoordinates: GeoCoordinates,
 //     update(mapCoordinates: GeoCoordinates): void
 // }
-export default function MapField(){
 
+
+// export function MapField({mapCoordinates, update}:MapValueProps){
+export default function MapField(){
     const [location, setLocation] = useState({ lat: 7, lng: 80 });
     const [lat, setLat] = useState(location.lat);
     const [lng, setLng] = useState(location.lng);
     const [zoomLevel, setZoomLevel] = useState(15);
-    const [key] = useState(new Date().toISOString());
+    const [key, setKey] = useState(new Date().toISOString());
     const [locationOption, setLocationOption] = useState("geo_location");
     const [address, setAddress] = useState("")
     const [locationConfirmed, setLocationConfirmed] = useState(false)
-    // const {tx} = useI18n("checkoutSection.mapSection")
+    
 
     function updateLocation(event: ChangeEvent<HTMLInputElement>): any {
         const { name, value } = event.target;
         if (name === "lat") {
             setLat(Number(value));
             // updateWithData({lat: Number(value)})
+            // updateWithData({lat: !event.target.value ? undefined : parseFloat(event.target.value)})
+
         } else if (name === "lng") {
             setLng(Number(value));
             // updateWithData({lng: Number(value)})
+            // updateWithData({lng: !event.target.value ? undefined : parseFloat(event.target.value)})
         }
     }
+
+
     // let updateWithData = useCallback<(data: Partial<GeoCoordinates>) => void>((data) => {
     //     if(mapCoordinates){
     //         update({
@@ -259,6 +268,10 @@ export default function MapField(){
 
     function updateDataOnMap() {
         setLocation({ lat, lng });
+        // if (mapCoordinates.lat && mapCoordinates.lng) {
+        //     setKey(new Date().toISOString());
+        //     setLocation({ lat: mapCoordinates.lat, lng: mapCoordinates.lng });
+        // }
     }
 
     function mapClickHandler(mapClickData: any){
@@ -301,10 +314,8 @@ export default function MapField(){
                     {/* <FontAwesomeIcon icon={faCheckCircle} size={"lg"} color={"grey"}/> */}
                     {/* <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check-circle" className="svg-inline--fa fa-check-circle fa-w-16 check-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path></svg> */}
                     <span className="font-weight-bold">{' '}Confirm Location On Map</span></div>
-                <div
-                    className="p-2 justify-content-between"
-                    // style={{ background: "#aad9fc" }}
-                >
+                
+                <div className="p-2 justify-content-between">
                     <div className="form-check form-check-inline">
                         <input className="form-check-input" type="radio" name="locationOption" id="geoLocation" value="geo_location" onChange={(e: ChangeEvent<HTMLInputElement>) => setLocationOption(e.target.value)}
                             checked={locationOption === "geo_location"}
@@ -322,6 +333,7 @@ export default function MapField(){
                         </label>
                     </div>
                 </div>
+
                 <MapContainer
                     key={key}
                     defaultZoom={zoomLevel}
@@ -338,6 +350,7 @@ export default function MapField(){
                     dragHandler={mapClickHandler}
                 />
             </div>
+
             <div className="row input-row">
                 {locationOption === "reverse_geo_location" ? (
                     <>
@@ -353,11 +366,15 @@ export default function MapField(){
                         <div className="col-lg-4 col-md-4 col-sm-12 py-1">
                             <label>Latitude</label>
                             <input className="form-control map-input-control" type="number" name="lat" value={lat} disabled={locationConfirmed} placeholder="Enter Latitude" onChange={updateLocation}/>
+                            {/* <input className="form-control map-input-control" type="number" name="lat" value={mapCoordinates.lat} disabled={locationConfirmed} placeholder="Enter Latitude" onChange={updateLocation}/> */}
                         </div>
+
                         <div className="col-lg-4 col-md-4 col-sm-12 py-1">
                             <label>Longitude</label>
                             <input className="form-control map-input-control" type="number" name="lng" value={lng} disabled={locationConfirmed} placeholder="Enter Longitude" onChange={updateLocation}/>
+                            {/* <input className="form-control map-input-control" type="number" name="lng" value={mapCoordinates.lng} disabled={locationConfirmed} placeholder="Enter Longitude" onChange={updateLocation}/> */}
                         </div>
+
                         <div className="col-md-4 col-sm-12 p-0 py-2">
                             <div className="d-flex justify-content-center">
                                 <button style = {{border: "1px solid #000"}} className="mt-0 btn custom-button place-button mt-4" type="button" onClick={() => locationConfirmed ? null: updateDataOnMap()}>
@@ -369,6 +386,7 @@ export default function MapField(){
                     </>
                 )}
             </div>
+
             <div className="row">
                 <div className="col-md-12 col-sm-12 position-relative pe-0 my-2">
                     <div>
@@ -396,3 +414,11 @@ export default function MapField(){
 }
 
 
+// export default function MapView({formData, onChange}: FieldProps<GeoCoordinates>){
+//     return<>
+//         <MapField mapCoordinates={formData}
+//                      update={mapCoordinates => {
+//                          onChange(mapCoordinates)
+//                      }}/>
+//     </>
+// }
