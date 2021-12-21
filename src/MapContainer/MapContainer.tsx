@@ -9,6 +9,8 @@ import MapContainerProps from "./MapContainerInterface";
 // import {useCart} from "../../../../../../reducers/cart/get";
 // import {isSuccess} from "../../../../../../reducers/networkStateReducer";
 // import {useSetShippingAddressGeoCoordinatesToCart} from "../../../../../../reducers/cart/setGeoCoordinates";
+// import {useSchema} from "../../../../../../reducers/schema";
+
 
 const MAP_HEIGHT: number = 500
 const googleMapURL = "https://maps.googleapis.com/maps/api/js?key=AIzaSyAJIsQq2P13hvXC12s7bdzvyb9btODQQNU&v=3.exp&libraries=geometry,drawing,places";
@@ -77,6 +79,15 @@ export default function MapContainer(){
     // const {tx} = useI18n("checkoutSection.mapSection")
     // const [cart, getCart]= useCart()
     // const [_, setGeoCoordinate, reset] = useSetShippingAddressGeoCoordinatesToCart()
+    // const [schema] = useSchema();
+
+
+    // useEffect(() => {
+    //     if (isSuccess(schema)) {
+    //         setLocation(schema.data.country)   // TODO
+    //     }
+    // }, [schema])
+
 
     useEffect(() => {
         setLat(location.lat);
@@ -95,6 +106,7 @@ export default function MapContainer(){
         }
     }, [location]);
 
+
     // useEffect(() => {
     //     if(isSuccess(cart)) {
     //         setLat(cart.data.shippingAddress?.geoCoordinates?.lat ?? location.lat)
@@ -106,6 +118,7 @@ export default function MapContainer(){
     //     return reset
     // },[])
 
+    
     function updateLocation(event: ChangeEvent<HTMLInputElement>): any {
         const { name, value } = event.target;
         if (name === "lat") {
